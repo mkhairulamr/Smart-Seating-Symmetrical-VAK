@@ -1,0 +1,6 @@
+{
+  "name": "Smart Seating Symmetrical VAK",
+  "description": "Aplikasi penataan posisi tempat duduk siswa berbasis hasil tes gaya belajar VAK (Visual, Auditori, Kinestetik) dengan visualisasi denah kelas interaktif 5x6.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
