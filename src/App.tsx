@@ -23,7 +23,8 @@ import {
   CheckCircle2, 
   EyeOff, 
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  Key
 } from 'lucide-react';
 
 export default function App() {
@@ -140,6 +141,7 @@ export default function App() {
   const [adminPassword, setAdminPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showPasswordHashDetail, setShowPasswordHashDetail] = useState(false);
+  const [showCredentialHelp, setShowCredentialHelp] = useState(false);
 
   const [userRole, setUserRole] = useState<'super_admin' | 'wali_kelas' | null>(() => {
     return (localStorage.getItem('smart_seating_user_role') as any) || null;
@@ -865,17 +867,17 @@ export default function App() {
               </div>
 
               {/* Password_hash Explanation Tooltip Block */}
-              <div className="pt-2 border-t border-slate-100 mt-4">
+              <div className="pt-2 border-t border-slate-100 mt-4 flex flex-col gap-2">
                 <button
                   type="button"
                   onClick={() => setShowPasswordHashDetail(!showPasswordHashDetail)}
-                  className="text-[11px] text-sky-650 font-semibold hover:underline flex items-center gap-1"
+                  className="text-[11px] text-sky-650 font-semibold hover:underline flex items-center gap-1 text-start"
                 >
-                  <Database size={12} />
+                  <Database size={12} className="shrink-0" />
                   {showPasswordHashDetail ? 'Sembunyikan Informasi Kriptografi Hash PHP' : 'Bagaimana Password Anda Aman di Sistem PHP?'}
                 </button>
                 {showPasswordHashDetail && (
-                  <div className="mt-2.5 p-3 bg-slate-50 border text-[10px] text-slate-500 rounded-xl leading-relaxed space-y-1.5 select-text">
+                  <div className="p-3 bg-slate-50 border text-[10px] text-slate-500 rounded-xl leading-relaxed space-y-1.5 select-text animate-fadeIn">
                     <span className="font-bold text-slate-700">✓ Secure Hash Verifikasi (password_hash):</span>
                     <p>
                       Password administrator tidak disimpan dalam teks polos (plaintext). Di backend PHP, kami menyandikannya memakai algoritma satu arah <code>PASSWORD_BCRYPT</code>:
@@ -884,6 +886,54 @@ export default function App() {
                       $2y$10$7Z2v7f4Sg8wFveZgU.G8gOxSSeRoxAco/8L4jveP/ApxE9.f2uASe
                     </code>
                     <p>Secara andal menangkal eksploitasi kebocoran kredensial (brute force & rainbow tables).</p>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowCredentialHelp(!showCredentialHelp)}
+                  className="text-[11px] text-amber-700 font-bold hover:underline flex items-center gap-1 text-start"
+                >
+                  <Key size={12} className="shrink-0 text-amber-600" />
+                  {showCredentialHelp ? 'Sembunyikan Pintasan Akun' : 'Lupa Password / Lihat Daftar Akun Uji Coba'}
+                </button>
+                {showCredentialHelp && (
+                  <div className="p-3 bg-amber-50/50 border border-amber-100/75 rounded-xl space-y-2 text-[10px] text-slate-650 max-h-[190px] overflow-y-auto animate-fadeIn select-none">
+                    <p className="font-semibold text-amber-800 break-normal">Bantuan Kredensial Uji Coba (Klik untuk Isi Otomatis):</p>
+                    <div className="space-y-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAdminUsername('khairul');
+                          setAdminPassword('password123');
+                        }}
+                        className="w-full text-start p-2 hover:bg-amber-100/70 bg-amber-100/30 rounded border border-amber-200/50 flex justify-between items-center transition-all cursor-pointer"
+                      >
+                        <div className="pr-2">
+                          <span className="font-bold text-amber-900 text-[10px] block">Super Admin: khairul</span>
+                          <span className="block text-[9px] text-slate-500 font-mono mt-0.5">Sandi: password123</span>
+                        </div>
+                        <span className="text-[9px] font-bold text-amber-800 bg-amber-200/50 px-1.5 py-0.5 rounded shrink-0">Pilih</span>
+                      </button>
+
+                      {waliKelasList.map((w) => (
+                        <button
+                          type="button"
+                          key={w.id}
+                          onClick={() => {
+                            setAdminUsername(w.username);
+                            setAdminPassword(w.passwordRaw);
+                          }}
+                          className="w-full text-start p-2 hover:bg-slate-150 bg-white rounded border border-slate-200/60 flex justify-between items-center transition-all cursor-pointer"
+                        >
+                          <div className="pr-2">
+                            <span className="font-bold text-slate-700 text-[10px] block">Guru: {w.username}</span>
+                            <span className="block text-[9px] text-slate-500 mt-0.5">Rombel: {w.classId} | Sandi: {w.passwordRaw}</span>
+                          </div>
+                          <span className="text-[9px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">Pilih</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
